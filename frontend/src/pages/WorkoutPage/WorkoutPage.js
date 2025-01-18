@@ -10,9 +10,6 @@ function WorkoutPage() {
     const [expandedExercises, setExpandedExercises] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
-    // Days of the week
-    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
     const handleInputChange = (e) => {
         const value = e.target.value;
         setInjury(value);
@@ -114,45 +111,42 @@ function WorkoutPage() {
             {error && <p className="error-message">{error}</p>}
             <div className="workout-plan-container">
                 {workoutPlan.length > 0 ? (
-                    workoutPlan.map((dayPlan, index) => {
-                        const dayKey = Object.keys(dayPlan)[0]; // Extract the day key (e.g., 1, 2, 3...)
-                        const dayIndex = parseInt(dayKey, 10) - 1; // Convert day to 0-based index
-                        const dayName = daysOfWeek[dayIndex]; // Map to day of the week
-                        const exercises = dayPlan[dayKey]; // Get the exercises for that day
+                    workoutPlan.map((dayPlan, index) => (
+                        <div key={index} className="day-plan">
+                            <h3>{dayPlan.day}</h3>
+                            <ul>
+                                {dayPlan.exercises.map((exercise, idx) => {
+                                    const { name, reps, url } = exercise;
+                                    const isExpanded = expandedExercises[`${dayPlan.day}-${idx}`];
 
-                        return (
-                            <div key={index} className="day-plan">
-                                <h3>{dayName}</h3>
-                                <ul>
-                                    {exercises.map((exercise, idx) => {
-                                        const exerciseParts = exercise.split(" ");
-                                        const exerciseName = exerciseParts.slice(0, -2).join(" ");
-                                        const reps = exerciseParts.slice(-2, -1).join(" ");
-                                        const url = exerciseParts.slice(-1)[0];
-                                        const isExpanded = expandedExercises[`${dayKey}-${idx}`];
-
-                                        return (
-                                            <li
-                                                key={idx}
-                                                onClick={() => toggleExerciseDetails(dayKey, idx)}
-                                                className={`exercise-item ${isExpanded ? 'expanded' : ''}`}
-                                            >
-                                                <strong>{exerciseName}</strong>
-                                                {isExpanded && (
-                                                    <>
-                                                        <p className="exercise-details">{reps}</p>
-                                                        <a href={url} target="_blank" rel="noopener noreferrer" className="exercise-link">
+                                    return (
+                                        <li
+                                            key={idx}
+                                            onClick={() => toggleExerciseDetails(dayPlan.day, idx)}
+                                            className={`exercise-item ${isExpanded ? 'expanded' : ''}`}
+                                        >
+                                            <strong>{name}</strong>
+                                            {isExpanded && (
+                                                <>
+                                                    <p className="exercise-details">{reps}</p>
+                                                    {url && (
+                                                        <a
+                                                            href={url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="exercise-link"
+                                                        >
                                                             View Exercise
                                                         </a>
-                                                    </>
-                                                )}
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </div>
-                        );
-                    })
+                                                    )}
+                                                </>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    ))
                 ) : (
                     !error && !isLoading && <p>No workout plan available. Please submit an injury.</p>
                 )}
