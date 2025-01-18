@@ -23,12 +23,16 @@ function ProfilePage() {
         event.preventDefault(); // Prevent default form submission
         try {
             // Filter out empty values
+            const filteredProfile = Object.fromEntries(
+                Object.entries(profile).filter(([_, value]) => value !== '')
+            );
+
             const response = await fetch('http://127.0.0.1:5000/profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(profile),
+                body: JSON.stringify(filteredProfile),
             });
 
             const result = await response.json();
