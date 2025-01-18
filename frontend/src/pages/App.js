@@ -1,156 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import injuries from './injuries.json';
+import WorkoutPage from './WorkoutPage/WorkoutPage';
+import ProfilePage from './ProfilePage/ProfilePage';
+import DietPage from './DietPage/DietPage';
+import HomePage from './HomePage/HomePage';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 function App() {
-    const [injury, setInjury] = useState('');
-    const [workoutPlan, setWorkoutPlan] = useState([]);
-    const [suggestions, setSuggestions] = useState([]);
-    const [error, setError] = useState(null);
-    const [expandedExercises, setExpandedExercises] = useState({});
-    const [isLoading, setIsLoading] = useState(false); // Loading state
+    const [isSidebarVisible, setSidebarVisible] = useState(false);
 
-    const daysOfWeekOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-    useEffect(() => {
-        setSuggestions([]);
-    }, []);
-
-    const handleInputChange = (e) => {
-        const value = e.target.value;
-        setInjury(value);
-
-        if (value) {
-            const filteredSuggestions = injuries.filter((injury) =>
-                injury.toLowerCase().includes(value.toLowerCase())
-            );
-            setSuggestions(filteredSuggestions.slice(0, 5)); // Limit to 5 suggestions
-        } else {
-            setSuggestions([]);
-        }
-    };
-
-    const handleSuggestionClick = (suggestion) => {
-        setInjury(suggestion);
-        setSuggestions([]);
-    };
-
-    const handleSubmit = () => {
-        if (!injuries.includes(injury.toLowerCase())) {
-            setWorkoutPlan([]);
-            setError('Please enter a valid injury.');
-            return;
-        }
-
-        setIsLoading(true); // Set loading state to true
-        setError(null); // Clear previous errors
-
-        fetch('http://127.0.0.1:5000/analyze', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ injury }),
-        })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    setError(data.error);
-                    setWorkoutPlan([]);
-                } else {
-                    const workoutPlanData = data[0];
-                    const sortedWorkoutPlan = Object.entries(workoutPlanData).sort(
-                        ([dayA], [dayB]) =>
-                            daysOfWeekOrder.indexOf(dayA) - daysOfWeekOrder.indexOf(dayB)
-                    );
-
-                    setWorkoutPlan(sortedWorkoutPlan);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setError('Error fetching workout plan.');
-                setWorkoutPlan([]);
-            })
-            .finally(() => {
-                setIsLoading(false); // Reset loading state
-            });
-
-        setSuggestions([]);
-    };
-
-    const toggleExerciseDetails = (day, index) => {
-        setExpandedExercises((prev) => ({
-            ...prev,
-            [`${day}-${index}`]: !prev[`${day}-${index}`],
-        }));
+    const toggleSidebar = () => {
+        setSidebarVisible(!isSidebarVisible);
     };
 
     return (
-        <div className="app-container">
-            <h1>Workout Assistant</h1>
-            <div className="input-container">
-                <input
-                    type="text"
-                    placeholder="Enter your injury"
-                    value={injury}
-                    onChange={handleInputChange}
-                    className="input-field"
-                />
-                {suggestions.length > 0 && (
-                    <ul className="suggestions-list">
-                        {suggestions.map((suggestion, index) => (
-                            <li
-                                key={index}
-                                onClick={() => handleSuggestionClick(suggestion)}
-                                className="suggestion-item"
-                            >
-                                {suggestion}
-                            </li>
-                        ))}
+        <Router>
+            <div className="app-container">
+                <button className="menu-toggle" onClick={toggleSidebar}>
+                    ☰
+                </button>
+                <div className={`sidebar ${isSidebarVisible ? 'visible' : 'hidden'}`}>
+                    <h2>HealMotion</h2>
+                    <ul>
+                        <li><Link to="/" onClick={toggleSidebar}>Home</Link></li>
+                        <li><Link to="/Workout" onClick={toggleSidebar}>Workout Assistant</Link></li>
+                        <li><Link to="/profile" onClick={toggleSidebar}>Profile</Link></li>
+                        <li><Link to="/diet" onClick={toggleSidebar}>Diet Recommendations</Link></li>
                     </ul>
-                )}
+                </div>
+                <div className="main-content">
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/Workout" element={<WorkoutPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/diet" element={<DietPage />} />
+                    </Routes>
+                </div>
             </div>
-            <button onClick={handleSubmit} className="submit-button">Submit</button>
-            {isLoading && <p className="loading-text">Loading...</p>} {/* Loading text */}
-            {error && <p className="error-message">{error}</p>}
-            <div className="workout-plan-container">
-                {workoutPlan.length > 0 ? (
-                    workoutPlan.map(([day, exercises], index) => (
-                        <div key={index} className="day-plan">
-                            <h3>{day}</h3>
-                            <ul>
-                                {exercises.map((exercise, idx) => {
-                                    const [exerciseName, ...details] = exercise.split(" ");
-                                    const detailsText = details.join(" ");
-                                    const isExpanded = expandedExercises[`${day}-${idx}`];
-
-                                    return (
-                                        <li
-                                            key={idx}
-                                            onClick={() => toggleExerciseDetails(day, idx)}
-                                            className={`exercise-item ${isExpanded ? 'expanded' : ''}`}
-                                        >
-                                            <strong>{exerciseName}</strong>
-                                            {isExpanded && (
-                                                <p className="exercise-details">{detailsText}</p>
-                                            )}
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </div>
-                    ))
-                ) : (
-                    !error && !isLoading && <p>No workout plan available. Please submit an injury.</p>
-                )}
-            </div>
-        </div>
+        </Router>
     );
 }
 
