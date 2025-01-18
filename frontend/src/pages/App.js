@@ -8,6 +8,7 @@ function App() {
     const [suggestions, setSuggestions] = useState([]);
     const [error, setError] = useState(null);
     const [expandedExercises, setExpandedExercises] = useState({});
+    const [isLoading, setIsLoading] = useState(false); // Loading state
 
     const daysOfWeekOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -41,6 +42,9 @@ function App() {
             return;
         }
 
+        setIsLoading(true); // Set loading state to true
+        setError(null); // Clear previous errors
+
         fetch('http://127.0.0.1:5000/analyze', {
             method: 'POST',
             headers: {
@@ -66,13 +70,15 @@ function App() {
                     );
 
                     setWorkoutPlan(sortedWorkoutPlan);
-                    setError(null);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 setError('Error fetching workout plan.');
                 setWorkoutPlan([]);
+            })
+            .finally(() => {
+                setIsLoading(false); // Reset loading state
             });
 
         setSuggestions([]);
@@ -111,6 +117,7 @@ function App() {
                 )}
             </div>
             <button onClick={handleSubmit} className="submit-button">Submit</button>
+            {isLoading && <p className="loading-text">Loading...</p>} {/* Loading text */}
             {error && <p className="error-message">{error}</p>}
             <div className="workout-plan-container">
                 {workoutPlan.length > 0 ? (
@@ -140,7 +147,7 @@ function App() {
                         </div>
                     ))
                 ) : (
-                    !error && <p>No workout plan available. Please submit an injury.</p>
+                    !error && !isLoading && <p>No workout plan available. Please submit an injury.</p>
                 )}
             </div>
         </div>
