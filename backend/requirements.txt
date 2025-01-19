@@ -1,5 +1,94 @@
-Flask
-flask-cors
-requests
-python-dotenv
-gunicorn
+annotated-types==0.7.0
+anyio==4.8.0
+archspec @ file:///home/conda/feedstock_root/build_artifacts/archspec_1708969572489/work
+attrs==23.2.0
+beautifulsoup4==4.12.3
+blinker==1.9.0
+boltons @ file:///home/conda/feedstock_root/build_artifacts/boltons_1711936407380/work
+boto3==1.35.97
+botocore==1.35.97
+Brotli @ file:///Users/runner/miniforge3/conda-bld/brotli-split_1695989934239/work
+cachetools==5.5.0
+certifi @ file:///home/conda/feedstock_root/build_artifacts/certifi_1707022139797/work/certifi
+cffi @ file:///Users/runner/miniforge3/conda-bld/cffi_1696001750083/work
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1698833585322/work
+click==8.1.7
+colorama @ file:///home/conda/feedstock_root/build_artifacts/colorama_1666700638685/work
+conda @ file:///Users/runner/miniforge3/conda-bld/conda_1715631955645/work
+conda-libmamba-solver @ file:///home/conda/feedstock_root/build_artifacts/conda-libmamba-solver_1706566000184/work/src
+conda-package-handling @ file:///home/conda/feedstock_root/build_artifacts/conda-package-handling_1691048088238/work
+conda_package_streaming @ file:///home/conda/feedstock_root/build_artifacts/conda-package-streaming_1691009212940/work
+cryptography==44.0.0
+distro @ file:///home/conda/feedstock_root/build_artifacts/distro_1704321475663/work
+exceptiongroup==1.2.1
+Flask==3.1.0
+Flask-Cors==5.0.0
+frozendict @ file:///Users/runner/miniforge3/conda-bld/frozendict_1715092790251/work
+google-ai-generativelanguage==0.6.10
+google-api-core==2.24.0
+google-api-python-client==2.159.0
+google-auth==2.37.0
+google-auth-httplib2==0.2.0
+google-generativeai==0.8.3
+googleapis-common-protos==1.66.0
+grpcio==1.69.0
+grpcio-status==1.69.0
+h11==0.14.0
+httpcore==1.0.7
+httplib2==0.22.0
+httpx==0.28.1
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1713279365350/work
+importlib_metadata==8.0.0
+itsdangerous==2.2.0
+Jinja2==3.1.4
+jiter==0.8.2
+jmespath==1.0.1
+jsonpatch @ file:///home/conda/feedstock_root/build_artifacts/jsonpatch_1695536281965/work
+jsonpointer @ file:///Users/runner/miniforge3/conda-bld/jsonpointer_1695397322962/work
+libmambapy @ file:///Users/runner/miniforge3/conda-bld/mamba-split_1711394373090/work/libmambapy
+MarkupSafe==2.1.5
+menuinst @ file:///Users/runner/miniforge3/conda-bld/menuinst_1716456606062/work
+openai==1.59.6
+outcome==1.3.0.post0
+packaging @ file:///home/conda/feedstock_root/build_artifacts/packaging_1710075952259/work
+pdfminer.six==20231228
+pdfplumber==0.11.5
+pillow==11.0.0
+platformdirs @ file:///home/conda/feedstock_root/build_artifacts/platformdirs_1715777629804/work
+pluggy @ file:///home/conda/feedstock_root/build_artifacts/pluggy_1713667077545/work
+proto-plus==1.25.0
+protobuf==5.29.3
+pyasn1==0.6.1
+pyasn1_modules==0.4.1
+pycosat @ file:///Users/runner/miniforge3/conda-bld/pycosat_1696355892939/work
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1711811537435/work
+pydantic==2.10.5
+pydantic_core==2.27.2
+pygame==2.6.0
+pyparsing==3.2.1
+pypdfium2==4.30.1
+PySocks @ file:///home/conda/feedstock_root/build_artifacts/pysocks_1661604839144/work
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1716354486713/work
+rsa==4.9
+ruamel.yaml @ file:///Users/runner/miniforge3/conda-bld/ruamel.yaml_1707298177583/work
+ruamel.yaml.clib @ file:///Users/runner/miniforge3/conda-bld/ruamel.yaml.clib_1707314608714/work
+s3transfer==0.10.4
+selenium==4.22.0
+six==1.17.0
+sniffio==1.3.1
+sortedcontainers==2.4.0
+soupsieve==2.5
+tqdm @ file:///home/conda/feedstock_root/build_artifacts/tqdm_1714854870413/work
+trio==0.25.1
+trio-websocket==0.11.1
+typing_extensions==4.12.2
+uritemplate==4.1.1
+urllib3==1.26.20
+webdriver-manager==4.0.1
+websocket-client==1.8.0
+Werkzeug==3.1.3
+wsproto==1.2.0
+zipp==3.19.2
+zstandard==0.22.0
