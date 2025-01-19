@@ -39,6 +39,14 @@ function DietPage() {
             });
     };
 
+    const handleDayClick = (day) => {
+        setSelectedDay(day);
+    };
+
+    const closeModal = () => {
+        setSelectedDay(null);
+    };
+
     return (
         <div>
             <h1>Nutrition</h1>
