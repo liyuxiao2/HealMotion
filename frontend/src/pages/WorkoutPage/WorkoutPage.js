@@ -80,7 +80,7 @@ function WorkoutPage() {
     };
 
     return (
-        <div className="app-container">
+        <div>
             <h1>Workout Assistant</h1>
             <div className="input-container">
                 <input
