@@ -118,7 +118,6 @@ function WorkoutPage() {
                                 {dayPlan.exercises.map((exercise, idx) => {
                                     const { name, reps, url } = exercise;
                                     const isExpanded = expandedExercises[`${dayPlan.day}-${idx}`];
-
                                     return (
                                         <li
                                             key={idx}
@@ -148,7 +147,7 @@ function WorkoutPage() {
                         </div>
                     ))
                 ) : (
-                    !error && !isLoading && <p>No workout plan available. Please submit an injury.</p>
+                    !error && !isLoading && <p>No workout plan available, please submit an injury.</p>
                 )}
             </div>
         </div>

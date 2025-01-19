@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
+import Modal from '../../components/modal';
 import './DietPage.css';
 
 function DietPage() {
     const [diet, setDiet] = useState([]);
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false); // Track loading state
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedDay, setSelectedDay] = useState(null); // Track selected day for modal
 
     const handleFetchDiet = () => {
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
         fetch('http://127.0.0.1:5000/diet', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                injury: 'lower back pain', // Example injury; replace with actual user input
+                injury: 'lower back pain',
             }),
         })
             .then((res) => {
@@ -35,16 +37,16 @@ function DietPage() {
                 setError('Failed to fetch diet recommendations.');
             })
             .finally(() => {
-                setIsLoading(false); // End loading
+                setIsLoading(false);
             });
     };
 
-    const handleDayClick = (day) => {
-        setSelectedDay(day);
+    const handleOpenModal = (day) => {
+        setSelectedDay(day); // Open modal with selected day's details
     };
 
-    const closeModal = () => {
-        setSelectedDay(null);
+    const handleCloseModal = () => {
+        setSelectedDay(null); // Close the modal
     };
 
     return (
@@ -53,33 +55,29 @@ function DietPage() {
             <button className="submit-button" onClick={handleFetchDiet}>
                 Get Diet
             </button>
-            {isLoading && <p className="loading-text">Loading...</p>} {/* Show loading message */}
+            {isLoading && <p className="loading-text">Loading...</p>}
             {error && <p className="error-message">{error}</p>}
             <div className="diet-plan-container">
                 {diet.length > 0 ? (
                     diet.map((day, index) => (
-                        <div key={index} className="day-plan">
+                        <div
+                            key={index}
+                            className="day-plan"
+                            onClick={() => handleOpenModal(day)}
+                        >
                             <h3>{day.day}</h3>
-                            <ul>
-                                {day.meals.map((meal, i) => (
-                                    <li key={i}>
-                                        <strong>{meal.meal}:</strong>
-                                        <ul>
-                                            {meal.items.map((item, j) => (
-                                                <li key={j} className="meal-details">
-                                                    {item}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                     ))
                 ) : (
-                    !error && !isLoading && <p>No recommendations yet.</p>
+                    !error && !isLoading && <p></p>
                 )}
             </div>
+            {/* Modal */}
+            <Modal
+                isOpen={!!selectedDay}
+                onClose={handleCloseModal}
+                dayPlan={selectedDay}
+            />
         </div>
     );
 }
