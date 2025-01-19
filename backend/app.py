@@ -40,7 +40,6 @@ def update_profile():
         app.logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-
 @app.route('/analyze', methods=['POST', 'OPTIONS'])
 def analyze_injury():
     if request.method == 'OPTIONS':
@@ -50,7 +49,7 @@ def analyze_injury():
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
         return response
-    
+
     try:
         data = request.get_json()
         injury = data.get('injury')
@@ -77,18 +76,20 @@ def analyze_injury():
         pre_prompt = (
             f"Given the injury '{injury}' with {severity} severity, for a person aged {age}, weighing {weight} kg, sex: {sex}, and {height} cm tall, "
             "generate a detailed 7-day workout plan in JSON format. "
-            "Each day should include:"
-            "  - 'day': The name of the day (e.g., 'Monday')."
-            "  - 'exercises': A list of objects, each with the following fields:"
-            "      - 'name': Name of the exercise."
-            "      - 'reps': Repetitions and sets (e.g., '10-15 reps, 3 sets')."
-            "      - 'url': URL of a video or tutorial."
+            "The response should include:"
+            "  - 'workoutPlan': An object containing:"
+            "      - 'days': A list of days, where each day is an object with the fields:"
+            "          - 'day': The name of the day (e.g., 'Monday')."
+            "          - 'exercises': A list of exercise objects, each with the fields:"
+            "              - 'name': The name of the exercise."
+            "              - 'reps': Repetitions and sets (e.g., '10-15 reps, 3 sets')."
+            "              - 'url': A URL to a tutorial video or additional information."
         )
 
         # Get AI response
         response = model.generate_content(pre_prompt)
         raw_response_text = response.candidates[0].content.parts[0].text
-        
+
         # Extract JSON from response
         json_match = re.search(r"{.*}", raw_response_text, re.DOTALL)
         if not json_match:
@@ -97,25 +98,20 @@ def analyze_injury():
         clean_response_text = json_match.group(0)
         response_json = json.loads(clean_response_text)
 
-        # Extract workout plan - the structure is different now
-        workout_plan = response_json.get("workoutPlan", [])  # This is already a list
-        
+        # Ensure `workoutPlan` exists and contains `days`
+        workout_plan = response_json.get("workoutPlan", {}).get("days", [])
         if not isinstance(workout_plan, list):
-            app.logger.error("Workout plan is not a list")
-            return jsonify({"error": "Invalid workout plan format"}), 500
+            raise ValueError("Invalid workout plan format: 'days' should be a list")
 
-        # Process each day
+        # Simplify response for frontend
         simplified_response = []
         for day_data in workout_plan:
-            if not isinstance(day_data, dict):
-                continue
-                
             day = day_data.get("day", "Unknown Day")
             exercises = day_data.get("exercises", [])
-            
+
             if not isinstance(exercises, list):
                 continue
-                
+
             simplified_exercises = [
                 {
                     "name": exercise.get("name", "Unknown Exercise"),
@@ -128,9 +124,7 @@ def analyze_injury():
 
         if not simplified_response:
             raise ValueError("No valid workout data could be processed")
-        
-        print(simplified_response)
-        
+
         return jsonify(simplified_response)
 
     except json.JSONDecodeError as parse_error:
