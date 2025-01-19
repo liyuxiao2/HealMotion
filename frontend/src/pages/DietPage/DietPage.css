@@ -1,0 +1,154 @@
+/* General Styling */
+.app-container {
+    text-align: center;
+    background: linear-gradient(45deg, #ff8a8a, #86a8e7);
+    background-size: 200% 200%; /* Make the gradient larger for smooth movement */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    color: rgb(255, 255, 255);
+
+    animation: gradientAnimation 8s ease infinite; /* Apply the animation */
+}
+
+/* Keyframes for animating the gradient */
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%; /* Start position */
+    }
+    50% {
+        background-position: 100% 50%; /* Mid position */
+    }
+    100% {
+        background-position: 0% 50%; /* End position (loop back) */
+    }
+}
+
+/* Title */
+.app-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* Submit Button */
+.submit-button {
+    padding: 12px 20px;
+    background-color: #659fe5d0;
+    color: rgba(255, 255, 255, 0.858);
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #679ee1;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.submit-button:active {
+    background-color: #70b5cf;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Error Message */
+.error-message {
+    color: #ff4c4c;
+    font-weight: bold;
+    margin-top: 15px;
+    background-color: #ffe5e5;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Diet Plan Container */
+.diet-plan-container {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+/* Day Plan Styling */
+.day-plan {
+    border: 1px solid #ffffff00;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 10px;
+    background-color: #7097df9c;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    text-align: left;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.day-plan:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.day-plan h3 {
+    margin-top: 0;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+/* Meals List */
+.day-plan ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.day-plan li {
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    background-color: #537fe584;
+    transition: background-color 0.3s ease;
+}
+
+.day-plan li:hover {
+    background-color: #245ddaaf;
+    cursor: pointer;
+}
+
+.meal-details {
+    margin-top: 5px;
+    color: #c4c4c4;
+    font-size: 0.9rem;
+}
+
+/* Links */
+.meal-link {
+    display: block;
+    margin-top: 5px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.meal-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .submit-button {
+        width: 100%;
+    }
+
+    .diet-plan-container {
+        width: 100%;
+    }
+}

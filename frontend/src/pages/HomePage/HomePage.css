@@ -4,10 +4,11 @@
     flex-direction: column;
     align-items: center;
     padding: 20px; /* Adjusted padding for better alignment */
-    background-color: #1b1e24;
+    background: #ffffff00; /* Gradient from pink to blue */
     color: white;
     min-height: 100vh;
 }
+
 
 .home-header {
     margin-bottom: 20px; /* Adjusted margin for better spacing */
@@ -21,13 +22,14 @@
 
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive grid */
+    grid-template-columns: repeat(3, 1fr); /* Three equally spaced columns */
     gap: 20px; /* Space between cards */
     margin-top: 20px; /* Space above the grid */
 }
 
+
 .category-card {
-    background-color: #2c313a; /* Card background color */
+    background-color: #ffffff3b; /* Card background color */
     color: white; /* Text color */
     padding: 20px; /* Padding inside the card */
     border-radius: 8px; /* Rounded corners */
@@ -36,7 +38,7 @@
 }
 
 .category-card:hover {
-    background-color: #35b7e3; /* Change background on hover */
+    background-color: #8fabde; /* Change background on hover */
 }
 
 .home-footer {

@@ -1,13 +1,21 @@
 .profile-container {
-    background-color: #1b1e24;
-    color: white;
-    height: 100%;
-    width: 100%;
+    background-color: #00000041; /* White background for the card */
+    color: black; /* Text color for readability */
+    height: auto; /* Adjust height dynamically based on content */
+    width: 100%; /* Full width */
+    max-width: 900px; /* Limit the container width to match the original size */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: flex-start; /* Align items to the left */
+    padding: 20px; /* Add padding for internal spacing */
+    border: 1px solid #e0e0e0; /* Subtle gray border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin: 20px auto; /* Center the box horizontally and add vertical spacing */
 }
+
+
 
 .form-group input[type="checkbox"] {
     margin-right: 5px; /* Space between radio button and label */
@@ -23,7 +31,7 @@
     font-size: 2rem;
     margin-bottom: 20px;
     width: 100%; /* Ensure the title spans the full width */
-    color: #61dafb;
+    color: #ffffff;
 }
 
 .profile-form {
@@ -43,16 +51,16 @@
 
 label {
     font-size: 1rem;
-    color: #61dafb;
+    color: #ffffff;
     text-align: start;
 }
 
 input,
 textarea {
     padding: 10px;
-    border: 1px solid #333;
+    border: 1px solid #ffffff;
     border-radius: 5px;
-    background-color: #2c313a;
+    background-color: #ffffff89;
     color: white;
     font-size: 1rem;
     width: 50%; /* Adjust width as needed */
@@ -67,8 +75,8 @@ textarea {
 input:focus,
 textarea:focus {
     outline: none;
-    border-color: #61dafb;
-    box-shadow: 0 0 5px rgba(97, 218, 251, 0.8);
+    border-color: #ffffff;
+    box-shadow: 0 0 5px rgba(140, 174, 255, 0.8);
 }
 
 .submit-button {
@@ -76,8 +84,8 @@ textarea:focus {
     padding: 12px;
     font-size: 1rem;
     font-weight: bold;
-    color: black;
-    background-color: #61dafb;
+    color: rgb(255, 255, 255);
+    background-color: #ffffff73;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -87,7 +95,7 @@ textarea:focus {
 }
 
 .submit-button:hover {
-    background-color: #35b7e3;
+    background-color: #8fabde;
 }
 
 .checkbox-form-container{
@@ -102,9 +110,9 @@ textarea:focus {
     width: 120px; /* Adjust size as needed */
     height: 40px;
     margin-right: 10px; /* Space between checkboxes */
-    border: 1px solid #333;
+    border: 1px solid #ffffff71;
     border-radius: 5px;
-    background-color: #2c313a;
+    background-color: #ffffff7e;
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -127,7 +135,7 @@ textarea:focus {
 }
 
 .checkbox-container input[type="radio"]:checked + .custom-checkbox {
-    background-color: #61dafb; /* Change background color when checked */
+    background-color: #8fabde; /* Change background color when checked */
     box-shadow: 0 0 5px rgba(97, 218, 251, 0.8); /* Add a glow effect */
     color: white; /* Ensure text remains readable on the new background */
 }
