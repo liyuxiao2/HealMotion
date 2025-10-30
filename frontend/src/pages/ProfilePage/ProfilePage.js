@@ -27,7 +27,7 @@ function ProfilePage() {
                 Object.entries(profile).filter(([_, value]) => value !== '')
             );
 
-            const response = await fetch('http://127.0.0.1:8000/profile', {
+            const response = await fetch('/api/profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

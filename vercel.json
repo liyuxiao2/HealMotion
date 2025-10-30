@@ -1,14 +1,34 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "backend/app.py",
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    },
+    {
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
+      "src": "/api/(profile|analyze|diet)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/static/(.*)",
+      "dest": "frontend/static/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|svg|gif))",
+      "dest": "frontend/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "backend/app.py"
+      "dest": "frontend/index.html"
     }
   ]
 }
