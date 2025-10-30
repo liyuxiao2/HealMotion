@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional, Dict, List
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -8,62 +10,62 @@ import re
 
 load_dotenv()
 
-app = Flask(__name__)
+app = FastAPI()
 
-CORS(app,
-     resources={r"/*": {
-         "origins": ["http://localhost:3000"],
-         "methods": ["GET", "POST", "OPTIONS"],
-         "allow_headers": ["Content-Type", "Authorization"],
-         "supports_credentials": True
-     }})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 if not API_KEY:
     raise ValueError("API key not found. Ensure GEMINI_API_KEY is set in your .env file.")
 
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("models/gemini-2.5-flash-lite")
 
 user_profiles = {}
 
-@app.route('/profile', methods=['POST'])
-def update_profile():
+# Pydantic models
+class ProfileData(BaseModel):
+    age: Optional[int] = None
+    weight: Optional[float] = None
+    height: Optional[float] = None
+    sex: Optional[str] = None
+    severity: Optional[str] = None
+
+class InjuryRequest(BaseModel):
+    injury: str
+
+@app.post('/profile')
+async def update_profile(profile: ProfileData, request: Request):
     try:
-        data = request.get_json()
-        user_id = request.remote_addr
-        user_profiles[user_id] = data
-        print("Received profile data:", data)
+        user_id = request.client.host
+        user_profiles[user_id] = profile.dict()
+        print("Received profile data:", profile.dict())
         print("Stored profile data for user:", user_profiles[user_id])
-        return jsonify({"message": "Profile updated successfully!"}), 200
+        return {"message": "Profile updated successfully!"}
     except Exception as e:
-        app.logger.error(f"Error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.route('/analyze', methods=['POST', 'OPTIONS'])
-def analyze_injury():
-    if request.method == 'OPTIONS':
-        response = jsonify({'message': 'OK'})
-        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        return response
-
+@app.post('/analyze')
+async def analyze_injury(injury_request: InjuryRequest, request: Request):
     try:
-        data = request.get_json()
-        injury = data.get('injury')
+        injury = injury_request.injury
 
         if not injury:
-            return jsonify({"error": "No injury provided"}), 400
+            raise HTTPException(status_code=400, detail="No injury provided")
 
         # Retrieve profile data
-        user_id = request.remote_addr
+        user_id = request.client.host
         profile_data = user_profiles.get(user_id, {})
 
         if not isinstance(profile_data, dict):
-            app.logger.error(f"Invalid profile data for user {user_id}: {profile_data}")
-            return jsonify({"error": "Invalid profile data."}), 500
+            print(f"Invalid profile data for user {user_id}: {profile_data}")
+            raise HTTPException(status_code=500, detail="Invalid profile data.")
 
         # Extract profile information
         age = profile_data.get("age", "unknown")
@@ -83,7 +85,7 @@ def analyze_injury():
             "          - 'exercises': A list of exercise objects, each with the fields:"
             "              - 'name': The name of the exercise."
             "              - 'reps': Repetitions and sets (e.g., '10-15 reps, 3 sets')."
-            "              - 'url': A URL to a tutorial video or additional information."
+            "              - 'url': A URL to a google search for additional information."
         )
 
         # Get AI response
@@ -125,32 +127,31 @@ def analyze_injury():
         if not simplified_response:
             raise ValueError("No valid workout data could be processed")
 
-        return jsonify(simplified_response)
+        return simplified_response
 
     except json.JSONDecodeError as parse_error:
-        app.logger.error(f"Error parsing response: {parse_error}")
-        return jsonify({"error": "Failed to parse AI response."}), 500
+        print(f"Error parsing response: {parse_error}")
+        raise HTTPException(status_code=500, detail="Failed to parse AI response.")
     except Exception as e:
-        app.logger.error(f"Error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        print(f"Error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.route('/diet', methods=['POST'])
-def analyze_diet():
+@app.post('/diet')
+async def analyze_diet(injury_request: InjuryRequest, request: Request):
     try:
-        data = request.get_json()
-        injury = data.get('injury')
+        injury = injury_request.injury
 
         if not injury:
-            return jsonify({"error": "No injury provided"}), 400
+            raise HTTPException(status_code=400, detail="No injury provided")
 
         # Retrieve profile data
-        user_id = request.remote_addr
+        user_id = request.client.host
         profile_data = user_profiles.get(user_id, {})
 
         if not isinstance(profile_data, dict):
-            app.logger.error(f"Invalid profile data for user {user_id}: {profile_data}")
-            return jsonify({"error": "Invalid profile data."}), 500
+            print(f"Invalid profile data for user {user_id}: {profile_data}")
+            raise HTTPException(status_code=500, detail="Invalid profile data.")
 
         # Extract profile information
         age = profile_data.get("age", "unknown")
@@ -199,16 +200,14 @@ def analyze_diet():
             ]
             simplified_response.append({"day": day, "meals": simplified_meals})
 
-        return jsonify(simplified_response)
+        return simplified_response
 
     except json.JSONDecodeError as parse_error:
-        app.logger.error(f"Error parsing response: {parse_error}")
-        return jsonify({"error": "Failed to parse AI response."}), 500
+        print(f"Error parsing response: {parse_error}")
+        raise HTTPException(status_code=500, detail="Failed to parse AI response.")
     except Exception as e:
-        app.logger.error(f"Error occurred: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        print(f"Error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    
-    
-if __name__ == '__main__':
-    app.run(debug=True)
+# Vercel serverless function handler
+handler = app

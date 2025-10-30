@@ -1,4 +1,6 @@
-Flask
+fastapi
+uvicorn
 requests
-flask-cors
 python-dotenv
+pydantic
+google.generativeai
